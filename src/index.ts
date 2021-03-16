@@ -1,0 +1,157 @@
+import * as Discord from "discord.js";
+import * as Config from "./config";
+//var db = require('quick.db');
+import { IBotCommand } from "./api/capi";
+import { IBotEvent } from "./api/eapi";
+//var Clan = new db.table('clan');
+//var Jokes = new db.table('joke');
+const Bot: Discord.Client = new Discord.Client();
+const request = require('request');
+const fs = require('fs');
+//Required imports
+
+let commands: IBotCommand[] = [];
+let events: IBotEvent[] = [];
+
+loadCommands(`${__dirname}/commands`)
+loadEvents(`${__dirname}/events`)
+//get all commands from directory name (arbitrary) and load them into commands which is of type IBotCommand
+
+const cooldowns: any = new Discord.Collection();
+
+//cooldowns is a object that takes a key-value pair and stores it in an array
+function randint(min: number,max: number) // min and max included
+{
+        return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+Bot.on("ready", () => {
+    console.log("This bot is online!"); //standard protocol when starting up the bot
+    Bot.user!.setPresence({ activity: {type: "WATCHING", name: 'hackathon' }, status: 'dnd' })
+    //.then(console.log)
+    .catch(console.error);
+
+   /* let allUsers = Bot.users.array(); //get all Users and store them in an array
+    for (let i = 0; i < allUsers.length; i++){
+        if (db.get(allUsers[i].id) == null){ //if User ID is not already in database (db) then add them, else do nothing
+            db.set(allUsers[i].id,{money:50,items:[],tAmt:0,sAmt: 0,aAmt:0, vAmt: 0, glory: 0,clanname:'None',position:''})
+        }
+        let cName = db.get(`${allUsers[i].id}.clanname`) //cName is the clanname stored in the user's profile in db
+        if (cName === 'None'){
+            continue;
+        } //Make sure we don't add None to the clan db table
+        if (Clan.get(cName) == null){
+            Clan.set(cName,{prestige:0,money:0,memberids:[allUsers[i].id],memberuns:[allUsers[i].username]})
+        } //if user has clanname, but clan doesnt exist, clan db table auto makes clan with user in it (rare but important failsafe)
+
+    } */
+    
+})
+
+Bot.on("guildMemberAdd", member => {
+   join(member); //if member joins
+   //if (db.get(member.id)){ //if new member not in db, add them!
+  //     db.set(member.id,{money:50,items:[],tAmt: 0, sAmt: 0,aAmt: 0, vAmt : 0, glory: 0,clanname:'None',position:''})
+  // }
+ 
+})
+
+function join(member: Discord.GuildMember){
+  //  let welcomeChannel = member.guild.channels.find(channel => channel.name === "welcome") as Discord.TextChannel;
+  //  welcomeChannel.send(`Welcome ${member}`);
+ //   let memberRole = member.guild.roles.find(role => role.id == "594339240280850445");
+  //  member.addRole(memberRole);
+ //   member.send(`${member}, hey! Welcome to the Eclipse Testing Centre (ETC).`);
+} //simple onJoin commands, nothing too important here!
+
+Bot.on("message", msg => {
+    if (msg.author.bot) return;
+    handleEvent(msg); // checks every message regardless of what it contains
+    if (!msg.content.startsWith('!')) return;
+    if (msg.channel.type == 'dm'){
+        msg.author.send(`Please talk to me on a server! This ensures more engagement and reliability.`);
+        return;
+    } //makes sure that user cannot talk to bot on direct message, must be server!
+    handleCommand(msg);
+
+})
+
+async function handleEvent(msg: Discord.Message){
+    for (const eventClass of events){
+        await eventClass.runEvent(msg,Bot);
+    }
+}
+
+async function handleCommand(msg: Discord.Message){
+    let command = msg.content.split(" ")[0].replace(Config.config.prefix,"").toLowerCase(); //Config.config.prefix is "!"
+    let args = msg.content.split(" ").slice(1);
+    //Make command and args lowercase
+    if (command == "helpcommands" || command == "helpcommand" || command == "helpcmd"){
+        let a = [];
+        for (const cmdClass of commands){
+            a.push(`${cmdClass.name()}\n`);
+        }
+        msg.author.send(`Here are a list of my commands: ${a}\nYou can say \`!command_name help\``);
+        return;
+    } //see above
+
+    for (const commandClass of commands){
+        try {
+            if (!commandClass.isThisCommand(command) ){
+                continue;
+            } //Checks IBotCommands (located in api.ts) for layout, if isThisCommand String is not equal to command, skip!
+            if (!cooldowns.has(commandClass.name())) { //if name String in api.ts (IBotCommand) == to command
+                cooldowns.set(commandClass.name(), new Discord.Collection()); //store the command name and a obj key-val 
+            }
+            
+            const now = Date.now();
+            const timestamps = cooldowns.get(commandClass.name()); //whatever is in the Discord.Collection, yeah thats timestamps now!
+            const cooldownAmount = (commandClass.cooldown() || 3) * 1000; //from ms to sec
+            //Begins the cooldown command process!
+            if (timestamps.has(msg.author.id)) { //checks to see if user in col
+                const expirationTime: number = timestamps.get(msg.author.id) + cooldownAmount; //expiration is time assigned to user + cooldownAmt
+            
+                if (now < expirationTime) {
+                    const timeLeft = (expirationTime - now) / 1000;
+                    if (timeLeft > 3600){
+                        return msg.reply(`please wait ${Math.round(timeLeft/3600)} more hour(s) before reusing the \`${commandClass.name()}\` command.`);
+                    } else if (timeLeft > 60 && timeLeft < 3600){
+                        return msg.reply(`please wait ${Math.round(timeLeft/60)} more minute(s) before reusing the \`${commandClass.name()}\` command.`);
+                    } else {
+                    return msg.reply(`please wait ${Math.round(timeLeft)} more second(s) before reusing the \`${commandClass.name()}\` command.`);
+                } //if hours, run 1, if min, run2, else run3
+            }
+            }
+            timestamps.set(msg.author.id, now); //user = key, time = val
+            setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount); //wait cooldownAmt!
+            await commandClass.runCommand(args,msg,Bot); //allows asynchronous operation and multithreading so multiple things can happen at once! also executes the cmd!
+        }
+        catch(e){
+            console.log(e);
+        }  //if error, log it!
+    }
+} 
+
+function loadCommands(commandsPath: string){
+    if (!Config.config.commands || (Config.config.commands as string[]).length == 0) return; //goes into config.ts and reads the commands, checks if they are valid
+
+    for (const commandName of Config.config.commands as string[]){ //turns commands in config.ts into a string array and iterates over them
+        const commandsClass = require(`${commandsPath}/${commandName}`).default; //imports the command file (default=ts) from file directory
+
+        const command = new commandsClass() as IBotCommand; //command now follows same layout as IBotCommand in form commandsClass(), created new object
+        commands.push(command); //adds commands to command array
+    }
+}
+
+function loadEvents(commandsPath: string){
+    if (!Config.config.events || (Config.config.events as string[]).length == 0) return; 
+
+    for (const eventName of Config.config.events as string[]){ //turns commands in config.ts into a string array and iterates over them
+        const eventsClass = require(`${commandsPath}/${eventName}`).default; //imports the command file (default=ts) from file directory
+
+        const event = new eventsClass() as IBotEvent; //command now follows same layout as IBotCommand in form commandsClass(), created new object
+        events.push(event); //adds commands to command array
+    }
+}
+
+Bot.login(Config.config.token); //logs in using token in config.config (not accessible to you)
