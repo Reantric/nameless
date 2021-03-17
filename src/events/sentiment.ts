@@ -77,8 +77,8 @@ export default class sentiment implements IBotEvent {
                                 .setTimestamp(new Date());
                 msg.channel.send(sentiment);
 
-                if (isNaN(credits))
-                    credits = body['status']['remaining_credits']
+                credits = body['status']['remaining_credits']
+                
                   /*  while (content.length > 2000){
                       msg.channel.send(content.slice(0,2000));
                       content = content.slice(2000);
