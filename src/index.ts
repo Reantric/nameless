@@ -13,6 +13,7 @@ const fs = require('fs');
 let commands: IBotCommand[] = [];
 let events: IBotEvent[] = [];
 
+
 loadCommands(`${__dirname}/commands`)
 loadEvents(`${__dirname}/events`)
 //get all commands from directory name (arbitrary) and load them into commands which is of type IBotCommand

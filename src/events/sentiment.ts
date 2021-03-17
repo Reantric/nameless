@@ -12,6 +12,8 @@ export let values: {[id: string]: number}  = {
   "N+": -1,
 }
 
+export let credits: number = NaN
+
 export default class sentiment implements IBotEvent {
 
 
@@ -74,6 +76,9 @@ export default class sentiment implements IBotEvent {
                                 .setFooter(`${body[`confidence`]}% confident`,Bot.user!.avatarURL()!)
                                 .setTimestamp(new Date());
                 msg.channel.send(sentiment);
+
+                if (isNaN(credits))
+                    credits = body['status']['remaining_credits']
                   /*  while (content.length > 2000){
                       msg.channel.send(content.slice(0,2000));
                       content = content.slice(2000);
