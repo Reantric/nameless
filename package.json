@@ -11,6 +11,11 @@
   "dependencies": {
     "discord.js": "^12.5.1",
     "follow-redirects": "^1.13.3",
-    "request": "^2.88.2"
+    "fs": "0.0.1-security",
+    "request": "^2.88.2",
+    "require": "^2.4.20"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.35"
   }
 }
