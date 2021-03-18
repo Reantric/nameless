@@ -1,16 +1,16 @@
 import * as Discord from "discord.js";
 import { IBotCommand } from "../api/capi";
 
-export default class credit implements IBotCommand {
+export default class getbanlist implements IBotCommand {
 
-    private readonly _command = "banList"
+    private readonly _command = "banlist"
 
     name(): string {
-        return "banList";
+        return "banlist";
     } 
 
     help(): string {
-        return "banList";
+        return "banlist";
     }   
     
     cooldown(): number{
