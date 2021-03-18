@@ -53,6 +53,7 @@ export default class sentiment implements IBotEvent {
                   
                   res.on("end", function (chunk: any) {
                     var body: any = JSON.parse(Buffer.concat(chunks).toString());
+                    console.log(body);
                     let score = body[`score_tag`]
 
                     let colorScheme = () => {
