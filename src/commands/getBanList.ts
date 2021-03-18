@@ -1,16 +1,16 @@
 import * as Discord from "discord.js";
 import { IBotCommand } from "../api/capi";
 
-export default class credit implements IBotCommand {
+export default class getbanlist implements IBotCommand {
 
-    private readonly _command = "banList"
+    private readonly _command = "banlist"
 
     name(): string {
-        return "banList";
+        return "banlist";
     } 
 
     help(): string {
-        return "banList";
+        return "banlist";
     }   
     
     cooldown(): number{
@@ -21,14 +21,12 @@ export default class credit implements IBotCommand {
     }
 
     async runCommand(args: string[], msg: Discord.Message, Bot: Discord.Client): Promise<void> {
-    
-        let text = "";
-        let counter = 1;
-        msg.guild?.fetchBans().then((element: any) => {
-            text+= counter + ". " + element; "\n";
-            counter++;
+        
+        msg.guild?.fetchBans().then(a => {
+            for (const user of a.array()){
+                msg.channel.send(user.user.username);
+            }
         })
-        msg.channel.send(text);
 
 }
 }
