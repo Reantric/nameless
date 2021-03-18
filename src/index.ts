@@ -1,10 +1,9 @@
 import * as Discord from "discord.js";
 import * as Config from "./config";
-//var db = require('quick.db');
+var db = require('quick.db');
 import { IBotCommand } from "./api/capi";
 import { IBotEvent } from "./api/eapi";
-//var Clan = new db.table('clan');
-//var Jokes = new db.table('joke');
+var userBehavior = new db.table('user');
 const Bot: Discord.Client = new Discord.Client();
 const request = require('request');
 const fs = require('fs');
@@ -32,28 +31,20 @@ Bot.on("ready", () => {
     //.then(console.log)
     .catch(console.error);
 
-   /* let allUsers = Bot.users.array(); //get all Users and store them in an array
+    let allUsers = Bot.users.cache.array(); //get all Users and store them in an array
     for (let i = 0; i < allUsers.length; i++){
-        if (db.get(allUsers[i].id) == null){ //if User ID is not already in database (db) then add them, else do nothing
-            db.set(allUsers[i].id,{money:50,items:[],tAmt:0,sAmt: 0,aAmt:0, vAmt: 0, glory: 0,clanname:'None',position:''})
+        if (!db.has(allUsers[i].id)){ //if User ID is not already in database (db) then add them, else do nothing
+            db.set(allUsers[i].id,{sentiment:0,strikes:0})
         }
-        let cName = db.get(`${allUsers[i].id}.clanname`) //cName is the clanname stored in the user's profile in db
-        if (cName === 'None'){
-            continue;
-        } //Make sure we don't add None to the clan db table
-        if (Clan.get(cName) == null){
-            Clan.set(cName,{prestige:0,money:0,memberids:[allUsers[i].id],memberuns:[allUsers[i].username]})
-        } //if user has clanname, but clan doesnt exist, clan db table auto makes clan with user in it (rare but important failsafe)
-
-    } */
+    } 
     
 })
 
 Bot.on("guildMemberAdd", member => {
    join(member); //if member joins
-   //if (db.get(member.id)){ //if new member not in db, add them!
-  //     db.set(member.id,{money:50,items:[],tAmt: 0, sAmt: 0,aAmt: 0, vAmt : 0, glory: 0,clanname:'None',position:''})
-  // }
+   if (!db.has(member.id)){ //if new member not in db, add them!
+       db.set(member.id,{sentiment:0,strikes:0})
+   }
  
 })
 

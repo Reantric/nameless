@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 
-export interface IBotEvent { //basically the blueprint for all commands to follow!
+export interface IBotEvent { //basically the blueprint for all events to follow!
     name(): string;
     help(): string;
     runEvent(msg: Discord.Message, Bot: Discord.Client): Promise<void>; /*give msg and bot, and is of type Promise<void> 

@@ -2,6 +2,7 @@ import * as Discord from "discord.js";
 import { IBotCommand } from "../api/capi";
 import { credits } from "../events/sentiment";
 
+
 export default class credit implements IBotCommand {
 
     private readonly _command = "credit"
