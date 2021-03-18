@@ -3,15 +3,14 @@ import { IBotEvent } from "../api/eapi";
 var https = require('follow-redirects').https;
 var fs = require('fs');
 
-export let values: {[id: string]: number}  = {
-  "P+": 1,
-  "P": 0.5,
+export let values: {[values: string]: number}  = {
+  "P+": 5,
+  "P": 2.5,
   "NEU" : 0,
   "NONE" : 0,
-  "N" : -0.5,
-  "N+": -1,
+  "N" : -2.5,
+  "N+": -5,
 }
-
 export let credits: number = NaN
 
 export default class sentiment implements IBotEvent {

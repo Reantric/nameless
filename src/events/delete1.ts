@@ -1,8 +1,10 @@
 import * as Discord from "discord.js";
 import { IBotEvent } from "../api/eapi";
+//import values from "./sentiment"; idk how to import the values array
 var https = require('follow-redirects').https;
 var fs = require('fs');
 import * as db from "quick.db";
+import sentiment from "./sentiment";
 //export let credits: number = NaN
 var forbiddenWords=['banana','apple','strawberry'];//use fruit names
 export default class delete1 implements IBotEvent {
