@@ -4,7 +4,7 @@ var https = require('follow-redirects').https;
 var fs = require('fs');
 import * as db from "quick.db";
 //export let credits: number = NaN
-var forbiddenWords=['fuck','bitch','hell','niga','nigger','nigga','fucker','fuk','ginder','shit','cock','cok','negro','chink','shitter', 'sanjit'];
+var forbiddenWords=['banana','apple','strawberry'];//use fruit names
 export default class delete1 implements IBotEvent {
 
     private readonly _command = "delete1"
@@ -33,7 +33,7 @@ export default class delete1 implements IBotEvent {
             msg.delete();
             console.log('Deleted message due to forbidden word');
             msg.author.send("Hey, you used a bad word in your recent message. It was deleted and you were given a strike."
-            +"You now have"+`${db.get(`${msg.author.id}.strikes`)} strikes!`);
+            +"You now have "+`${db.get(`${msg.author.id}.strikes`)} strikes!`);
             // delete message, log, etc.
             break;
           }
