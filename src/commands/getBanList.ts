@@ -21,14 +21,12 @@ export default class getbanlist implements IBotCommand {
     }
 
     async runCommand(args: string[], msg: Discord.Message, Bot: Discord.Client): Promise<void> {
-    
-        let text = "";
-        let counter = 1;
-        msg.guild?.fetchBans().then((element: any) => {
-            text+= counter + ". " + element; "\n";
-            counter++;
+        
+        msg.guild?.fetchBans().then(a => {
+            for (const user of a.array()){
+                msg.channel.send(user.user.username);
+            }
         })
-        msg.channel.send(text);
 
 }
 }
