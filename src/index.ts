@@ -34,27 +34,21 @@ Bot.on("ready", () => {
     let allUsers = Bot.users.cache.array(); //get all Users and store them in an array
     for (let i = 0; i < allUsers.length; i++){
         if (!db.has(allUsers[i].id)){ //if User ID is not already in database (db) then add them, else do nothing
-            db.set(allUsers[i].id,{sentiment:0,strikes:0})
+            db.set(allUsers[i].id,{lastTenMsgs:[],sentiment:0,strikes:0})
         }
     } 
     
 })
 
 Bot.on("guildMemberAdd", member => {
-   join(member); //if member joins
    if (!db.has(member.id)){ //if new member not in db, add them!
        db.set(member.id,{sentiment:0,strikes:0})
    }
+   console.log(member.user)
+   var role: any = member.guild.roles.cache.find(role => role.id == "822258289814536203");
+    member.roles.add(role);
  
 })
-
-function join(member: Discord.GuildMember){
-  //  let welcomeChannel = member.guild.channels.find(channel => channel.name === "welcome") as Discord.TextChannel;
-  //  welcomeChannel.send(`Welcome ${member}`);
- //   let memberRole = member.guild.roles.find(role => role.id == "594339240280850445");
-  //  member.addRole(memberRole);
- //   member.send(`${member}, hey! Welcome to the Eclipse Testing Centre (ETC).`);
-} //simple onJoin commands, nothing too important here!
 
 Bot.on("message", msg => {
     if (msg.author.bot) return;

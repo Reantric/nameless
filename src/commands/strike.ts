@@ -25,6 +25,12 @@ export default class strike implements IBotCommand {
     async runCommand(args: string[], msg: Discord.Message, Bot: Discord.Client): Promise<void> {
         const mentionedUser = msg.mentions.users.first();
         let strikeAmount = db.add(`${mentionedUser!.id}.strikes`,1);
+        switch (strikeAmount.strikes){
+            case 1:
+                msg.reply(`${mentionedUser?.username} now has ${db.get(`${mentionedUser!.id}.strikes`)} strikes!`)
+            default:
+
+        }
         msg.reply(`${mentionedUser?.username} now has ${db.get(`${mentionedUser!.id}.strikes`)} strikes!`)
         console.log(strikeAmount)
     }

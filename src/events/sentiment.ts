@@ -4,12 +4,12 @@ var https = require('follow-redirects').https;
 var fs = require('fs');
 
 export let values: {[values: string]: number}  = {
-  "P+": 5,
-  "P": 2.5,
+  "P+": 1,
+  "P": 0.5,
   "NEU" : 0,
   "NONE" : 0,
-  "N" : -2.5,
-  "N+": -5,
+  "N" : -0.5,
+  "N+": -1,
 }
 export let credits: number = NaN
 
@@ -28,7 +28,7 @@ export default class sentiment implements IBotEvent {
 
 
     async runEvent(msg: Discord.Message, Bot: Discord.Client): Promise<void> {
-        if (msg.channel.id != `821743564731973674` || msg.content.startsWith("!"))
+        if (msg.channel.id != `821743564731973674` && msg.channel.id != `822258266075430933` || msg.content.startsWith("!"))
                 return;
         
 
@@ -52,7 +52,7 @@ export default class sentiment implements IBotEvent {
                   
                   res.on("end", function (chunk: any) {
                     var body: any = JSON.parse(Buffer.concat(chunks).toString());
-                    console.log(body);
+               //     console.log(body);
                     let score = body[`score_tag`]
 
                     let colorScheme = () => {
