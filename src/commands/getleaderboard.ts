@@ -5,14 +5,14 @@ import * as db from "quick.db";
 
 export default class getbanlist implements IBotCommand {
 
-    private readonly _command = "top"
+    private readonly _command = "getleaderboard"
 
     name(): string {
-        return "top";
+        return "getleaderboard";
     } 
 
     help(): string {
-        return "top";
+        return "getleaderboard";
     }   
     
     cooldown(): number{
@@ -23,13 +23,23 @@ export default class getbanlist implements IBotCommand {
     }
 
     async runCommand(args: string[], msg: Discord.Message, Bot: Discord.Client): Promise<void> {
-     /* 8   const ranks = new Discord.MessageEmbed()
-                                .setTitle('Positivity Leaderboard');
-                                .setColor('#edc537');
-    let arr = db.all();
+        const embed = new Discord.MessageEmbed()
+        .setTitle('Positivity Leaderboard!')
+        .setAuthor(Bot.user!.username, Bot.user!.avatarURL()!)
+        //.setAuthor(msg.author.username)
+        .addFields(
+            { name: 'my field title', value: 'some stuff' },
+            { name: 'my field title2', value: 'some stuff' },
+            { name: 'my field title3', value: 'some stuff' }
+        )
+    
+        .setTimestamp()
+    
+    msg.channel.send(embed);         
+    /*let arr = db.all();
     for(let i = 0; i<arr.length; i++){
-
-    }
-    */
+        
+    }*/
+    
 }
 }

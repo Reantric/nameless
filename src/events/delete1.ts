@@ -15,7 +15,7 @@ export default class delete1 implements IBotEvent {
 
     name(): string {
         return "delete1";
-    } 
+    }
 
     help(): string {
         return "delete1";
