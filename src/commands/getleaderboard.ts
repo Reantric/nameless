@@ -27,8 +27,10 @@ export default class getbanlist implements IBotCommand {
         .setTitle('Positivity Leaderboard!')
         .setDescription('Here are the top ten most positive people in the server!')
         .setColor('#0099ff')
-        .setAuthor(Bot.user!.username, 'https://i.redd.it/l28662sbcec51.png')
-        //.setAuthor(msg.author.username)Bot.user!.avatarURL()!
+        .setAuthor(Bot.user!.username, Bot.user!.avatarURL()!)
+        //.setImage('https://i.redd.it/l28662sbcec51.png')
+        .setImage('https://i.imgur.com/aowYZQG.jpeg')
+        //.setAuthor(msg.author.username)
         .addFields(
             { name: 'my field title', value: 'some stuff' },
             { name: 'my field title2', value: 'some stuff' },
