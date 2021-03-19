@@ -5,14 +5,14 @@ import * as db from "quick.db";
 
 export default class getbanlist implements IBotCommand {
 
-    private readonly _command = "getleaderboard"
+    private readonly _command = "help"
 
     name(): string {
-        return "getleaderboard";
+        return "help";
     } 
 
     help(): string {
-        return "getleaderboard";
+        return "help";
     }   
     
     cooldown(): number{
@@ -24,15 +24,19 @@ export default class getbanlist implements IBotCommand {
 
     async runCommand(args: string[], msg: Discord.Message, Bot: Discord.Client): Promise<void> {
         const embed = new Discord.MessageEmbed()
-        .setTitle('Positivity Leaderboard!')
-        .setDescription('Here are the top ten most positive people in the server!')
+        .setTitle('Eclipse Help is Here!')
+        .setDescription('Here are a list of our commands!')
         .setColor('#0099ff')
-        .setAuthor(Bot.user!.username, 'https://i.redd.it/l28662sbcec51.png')
-        //.setAuthor(msg.author.username)Bot.user!.avatarURL()!
+        .setAuthor(Bot.user!.username, Bot.user!.avatarURL()!)
+        //.setAuthor(msg.author.username)
+        //.addField(mod,'Mod only commands')
         .addFields(
-            { name: 'my field title', value: 'some stuff' },
-            { name: 'my field title2', value: 'some stuff' },
-            { name: 'my field title3', value: 'some stuff' }
+            { name: '!banlist', value: 'DMs the mod with the list of banned users from the server' },
+            { name: '!strike', value: 'A manual strike to a user' }
+        )
+        //.addField('Member available commands',' ')
+        .addFields(
+            { name:'!getleaderboard', value:'Gives leaderboard of the top ten most positive members based on sentiment scores'},
         )
     
         .setTimestamp()
